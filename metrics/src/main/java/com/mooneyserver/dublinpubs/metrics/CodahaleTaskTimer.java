@@ -13,13 +13,15 @@ class CodahaleTaskTimer implements TaskTimer {
 
   @Override
   public void start() {
-    if (timerContext == null)
+    if (timerContext == null) {
       timerContext = timer.time();
+    }
   }
 
   @Override
   public void stop() {
-    if (timerContext != null)
+    if (timerContext != null) {
       timerContext.stop();
+    }
   }
 }

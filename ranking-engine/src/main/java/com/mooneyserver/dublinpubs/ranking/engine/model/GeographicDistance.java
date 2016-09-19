@@ -3,37 +3,51 @@ package com.mooneyserver.dublinpubs.ranking.engine.model;
 import lombok.Builder;
 import lombok.Data;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+
 @Builder
 @Data
 public class GeographicDistance {
 
   private static final Double HALF_EARTH_CIRCUMFERENCE = 20_039D;
-  private static final Double FEET_TO_METER = 0.3048;
-  private static final Double KM_TO_METER = 1_000D;
-  private static final Double MILE_TO_METER = 1_609.34;
 
   public static final GeographicDistance ALL_EARTH = GeographicDistance.builder()
       .distance(HALF_EARTH_CIRCUMFERENCE)
       .unitOfDistance(UnitOfDistance.KILOMETER)
       .build();
 
-  public static enum UnitOfDistance {
+  public static final MathContext TO_METRE_ROUNDING = new MathContext(4, RoundingMode.FLOOR);
+
+  public enum UnitOfDistance {
     METERS    (1D),
-    FEET      (FEET_TO_METER),
-    KILOMETER (KM_TO_METER),
-    MILES     (MILE_TO_METER);
+    FEET      (0.3048),
+    KILOMETER (1_000D),
+    MILES     (1_609.34);
 
-    private Double toMeterMultiplier;
+    private final Double toMeterMultiplier;
 
-    UnitOfDistance(Double toMeterMultiplier) {
-      this.toMeterMultiplier = toMeterMultiplier;
+    UnitOfDistance(final Double toMeterMultiplierIn) {
+      this.toMeterMultiplier = toMeterMultiplierIn;
+    }
+
+    public Double getToMeterMultiplier() {
+      return this.toMeterMultiplier;
     }
   }
 
   private Double distance;
   private UnitOfDistance unitOfDistance;
 
-  public Integer distanceInMeters() {
-    return -1;
+  /**
+   * Convert any Geographic Distance to the equivalent
+   * distance in the base distance type of meters.
+   */
+  public final BigDecimal distanceInMeters() {
+    return new BigDecimal(
+        distance * unitOfDistance.getToMeterMultiplier(),
+        TO_METRE_ROUNDING
+    );
   }
 }

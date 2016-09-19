@@ -34,8 +34,7 @@ public class HealthEndpoint {
   @Health
   @ApiOperation(
       value = "View the service health. Included is a breakdown of the current values for all the health metrics",
-      notes = "200 means healthy, anything else is unhealthy"
-  )
+      notes = "200 means healthy, anything else is unhealthy")
   public HealthStatus performHealthCheck() {
     return healthOfService();
   }
@@ -48,8 +47,8 @@ public class HealthEndpoint {
           ? HealthStatus.down()
           : HealthStatus.up();
 
-    for (String key : metrics.keySet()) {
-      status = status.withAttribute(key, String.valueOf(metrics.get(key)));
+    for (Map.Entry<String, Double> entry : metrics.entrySet()) {
+      status = status.withAttribute(entry.getKey(), String.valueOf(entry.getValue()));
     }
 
     return status;

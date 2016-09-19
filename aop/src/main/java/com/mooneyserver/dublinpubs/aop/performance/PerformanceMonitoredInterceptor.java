@@ -8,21 +8,29 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
+/**
+ * Class to be used in an AOP style to record the duration of code execution.
+ * This class is to be used as an Interceptor and should not be manually created.
+ */
 @Interceptor
 @PerformanceMonitored
-public class PerformanceMonitor {
+public class PerformanceMonitoredInterceptor {
 
   private MetricsService metricsService;
 
   @Inject
-  public PerformanceMonitor(MetricsService metricsService) {
+  public PerformanceMonitoredInterceptor(MetricsService metricsService) {
     this.metricsService = metricsService;
   }
 
+  /**
+   * Surround the execution of a code block with a metric timer which will record the duration of
+   * the method in question.
+   */
   @AroundInvoke
   public Object recordMethodDuration(InvocationContext invocationContext) throws Exception {
     TaskTimer timer = metricsService.timer(invocationContext.getMethod().getName());
-    try{
+    try {
       timer.start();
       return invocationContext.proceed();
     } finally {

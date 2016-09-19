@@ -4,6 +4,7 @@
         http://xmlns.jcp.org/xml/ns/javaee/beans_1_1.xsd"
        bean-discovery-mode="annotated">
   <interceptors>
-    <class>com.mooneyserver.dublinpubs.aop.performance.PerformanceMonitor</class>
+    <class>com.mooneyserver.dublinpubs.aop.performance.PerformanceMonitoredInterceptor</class>
+    <class>com.mooneyserver.dublinpubs.aop.web.WebResponseInterceptor</class>
   </interceptors>
 </beans>

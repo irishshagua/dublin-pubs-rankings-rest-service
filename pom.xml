@@ -210,40 +210,61 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
       </plugin>
 
       <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>cobertura-maven-plugin</artifactId>
-        <version>2.7</version>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.7.7.201606060606</version>
         <configuration>
-          <check>
-            <haltOnFailure>true</haltOnFailure>
-            <!-- Per-class thresholds -->
-            <lineRate>80</lineRate>
-            <branchRate>80</branchRate>
-            <!-- Project-wide thresholds -->
-            <totalLineRate>90</totalLineRate>
-            <totalBranchRate>90</totalBranchRate>
-          </check>
-          <instrumentation>
-            <ignoreTrivial>true</ignoreTrivial>
-            <ignoreMethodAnnotation>javax.annotation.PostConstruct</ignoreMethodAnnotation>
-            <excludes>
-              <exclude>com/mooneyserver/dublinpubs/metrics/MetricsServiceProducer.class</exclude>
-              <exclude>com/mooneyserver/dublinpubs/aop/web/model/*.class</exclude>
-              <exclude>com/mooneyserver/dublinpubs/ranking/engine/model/*.class</exclude>
-              <exclude>com/mooneyserver/dublinpubs/ranking/engine/TempRankingServiceMock.class</exclude>
-            </excludes>
-          </instrumentation>
+          <excludes>
+            <exclude>com/mooneyserver/dublinpubs/metrics/MetricsServiceProducer.class</exclude>
+            <exclude>com/mooneyserver/dublinpubs/aop/web/model/*.class</exclude>
+            <exclude>com/mooneyserver/dublinpubs/ranking/engine/model/*.class</exclude>
+            <exclude>com/mooneyserver/dublinpubs/ranking/engine/TempRankingServiceMock.class</exclude>
+          </excludes>
         </configuration>
         <executions>
           <execution>
-            <phase>verify</phase>
+            <id>jacoco-initialize</id>
             <goals>
-              <goal>clean</goal>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>jacoco-check</id>
+            <phase>test</phase>
+            <goals>
               <goal>check</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <rule implementation="org.jacoco.maven.RuleConfiguration">
+                  <element>BUNDLE</element>
+                  <limits>
+                    <limit implementation="org.jacoco.report.check.Limit">
+                      <counter>INSTRUCTION</counter>
+                      <value>COVEREDRATIO</value>
+                      <minimum>0.80</minimum>
+                    </limit>
+                  </limits>
+                </rule>
+              </rules>
+            </configuration>
+          </execution>
+          <execution>
+            <id>jacoco-report</id>
+            <phase>test</phase>
+            <goals>
+              <goal>report</goal>
             </goals>
           </execution>
         </executions>
       </plugin>
+
+      <plugin>
+        <groupId>org.eluder.coveralls</groupId>
+        <artifactId>coveralls-maven-plugin</artifactId>
+        <version>4.2.0</version>
+      </plugin>
+
     </plugins>
   </build>
 

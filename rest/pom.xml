@@ -57,6 +57,32 @@
       <groupId>com.mooneyserver.dublinpubs</groupId>
       <artifactId>aop</artifactId>
     </dependency>
+
+    <!-- Test Deps -->
+    <dependency>
+      <groupId>org.spockframework</groupId>
+      <artifactId>spock-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>cglib</groupId>
+      <artifactId>cglib-nodep</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.objenesis</groupId>
+      <artifactId>objenesis</artifactId>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-dmr</artifactId>
+      <scope>test</scope>
+    </dependency>
+
   </dependencies>
 
   <build>

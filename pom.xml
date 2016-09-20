@@ -122,6 +122,12 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
         <version>1.2</version>
       </dependency>
 
+      <dependency>
+        <groupId>org.jboss</groupId>
+        <artifactId>jboss-dmr</artifactId>
+        <version>1.4.0.Beta1</version>
+      </dependency>
+
     </dependencies>
   </dependencyManagement>
 
@@ -223,6 +229,8 @@ xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/ma
             <excludes>
               <exclude>com/mooneyserver/dublinpubs/metrics/MetricsServiceProducer.class</exclude>
               <exclude>com/mooneyserver/dublinpubs/aop/web/model/*.class</exclude>
+              <exclude>com/mooneyserver/dublinpubs/ranking/engine/model/*.class</exclude>
+              <exclude>com/mooneyserver/dublinpubs/ranking/engine/TempRankingServiceMock.class</exclude>
             </excludes>
           </instrumentation>
         </configuration>

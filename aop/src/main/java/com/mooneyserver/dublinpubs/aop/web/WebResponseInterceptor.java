@@ -1,5 +1,6 @@
 package com.mooneyserver.dublinpubs.aop.web;
 
+import com.mooneyserver.dublinpubs.aop.web.model.NullResponse;
 import com.mooneyserver.dublinpubs.aop.web.model.ResponseMetaData;
 import com.mooneyserver.dublinpubs.aop.web.model.ResponseWrapper;
 import org.slf4j.Logger;
@@ -30,13 +31,18 @@ public class WebResponseInterceptor {
    * an object which can provide some extra useful information to the HTTP client.
    */
   @AroundInvoke
-  public Object recordMethodDuration(InvocationContext invocationContext) throws Exception {
+  public Object bundleResponseInWrapper(InvocationContext invocationContext) throws Exception {
     Object initialResponse = null;
     ResponseMetaData metaData = null;
     try {
       initialResponse = invocationContext.proceed();
-      metaData = ResponseMetaData.builder().responseType(initialResponse.getClass())
-          .itemCount(sizeOfResponse(initialResponse)).build();
+      if (initialResponse == null) {
+        metaData = ResponseMetaData.builder().responseType(NullResponse.class)
+            .itemCount(0).build();
+      } else {
+        metaData = ResponseMetaData.builder().responseType(initialResponse.getClass())
+            .itemCount(sizeOfResponse(initialResponse)).build();
+      }
     } catch (Exception e) {
       logger.error("Exception thrown while processing {}:{}. {}", invocationContext.getTarget(),
           invocationContext.getMethod(), e.fillInStackTrace());

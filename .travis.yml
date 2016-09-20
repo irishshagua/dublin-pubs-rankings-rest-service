@@ -1,5 +1,7 @@
 language: java
 
+sudo: required
+
 jdk:
  - oraclejdk8
 
@@ -8,5 +10,7 @@ install: true
 script: mvn clean verify
 
 after_success:
-- mvn jacoco:report coveralls:report
+ - mvn jacoco:report coveralls:report
 
+services:
+ - docker

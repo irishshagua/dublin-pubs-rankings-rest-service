@@ -161,7 +161,6 @@
                   </ports>
                   <wait>
                     <!-- Check for this URL to return a 200 return code .... -->
-                    <log>.*Deployed.*</log>
                     <url>http://127.0.0.1:${wildfly.port}/rest/health</url>
                     <time>30000</time>
                   </wait>
@@ -189,13 +188,13 @@
                 <goal>start</goal>
               </goals>
             </execution>
-            <!--<execution>-->
-              <!--<id>stop</id>-->
-              <!--<phase>post-integration-test</phase>-->
-              <!--<goals>-->
-                <!--<goal>stop</goal>-->
-              <!--</goals>-->
-            <!--</execution>-->
+            <execution>
+              <id>stop</id>
+              <phase>post-integration-test</phase>
+              <goals>
+                <goal>stop</goal>
+              </goals>
+            </execution>
           </executions>
         </plugin>
     </plugins>

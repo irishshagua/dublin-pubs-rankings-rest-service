@@ -161,8 +161,8 @@
                   </ports>
                   <wait>
                     <!-- Check for this URL to return a 200 return code .... -->
-                    <url>http://${docker.host.address}:${wildfly.port}/rest/health</url>
-                    <!-- ... but at max 10 seconds -->
+                    <!-- <url>http://${docker.host.address}:${wildfly.port}/rest/health</url> -->
+                    <log>Deployed "pub-ranker.war" (runtime-name : "pub-ranker.war")</log>
                     <time>20000</time>
                   </wait>
                   <links>
@@ -189,13 +189,13 @@
                 <goal>start</goal>
               </goals>
             </execution>
-            <execution>
-              <id>stop</id>
-              <phase>post-integration-test</phase>
-              <goals>
-                <goal>stop</goal>
-              </goals>
-            </execution>
+            <!--<execution>-->
+              <!--<id>stop</id>-->
+              <!--<phase>post-integration-test</phase>-->
+              <!--<goals>-->
+                <!--<goal>stop</goal>-->
+              <!--</goals>-->
+            <!--</execution>-->
           </executions>
         </plugin>
     </plugins>

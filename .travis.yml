@@ -5,12 +5,15 @@ sudo: required
 jdk:
  - oraclejdk8
 
+services:
+ - docker
+
 install: true
 
 script: mvn clean verify
 
 after_success:
  - mvn jacoco:report coveralls:report
+ - docker ps -a
 
-services:
- - docker
+

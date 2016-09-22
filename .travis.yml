@@ -10,7 +10,7 @@ services:
 
 install: true
 
-script: mvn clean verify
+script: mvn -q clean verify
 
 after_success:
  - mvn jacoco:report coveralls:report

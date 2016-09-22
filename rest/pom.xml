@@ -125,7 +125,7 @@
         <artifactId>docker-maven-plugin</artifactId>
 
         <configuration>
-          <logDate>default</logDate>
+          <logStdout>false</logStdout>
           <autoPull>true</autoPull>
           <images>
             <image>

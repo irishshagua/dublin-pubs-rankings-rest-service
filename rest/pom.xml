@@ -83,6 +83,24 @@
       <scope>test</scope>
     </dependency>
 
+    <dependency>
+      <groupId>org.scala-lang</groupId>
+      <artifactId>scala-library</artifactId>
+      <!--<scope>test</scope>-->
+    </dependency>
+
+    <dependency>
+      <groupId>org.scalatest</groupId>
+      <artifactId>scalatest_2.11</artifactId>
+      <!--<scope>test</scope>-->
+    </dependency>
+
+    <dependency>
+      <groupId>com.typesafe.play</groupId>
+      <artifactId>play-ws_2.11</artifactId>
+      <!--<scope>test</scope>-->
+    </dependency>
+
   </dependencies>
 
   <build>
@@ -103,80 +121,121 @@
 
 
       <plugin>
-          <groupId>io.fabric8</groupId>
-          <artifactId>docker-maven-plugin</artifactId>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
 
-          <configuration>
-            <logDate>default</logDate>
-            <autoPull>true</autoPull>
-            <images>
-              <image>
-                <alias>db</alias>
-                <name>postgres:8</name>
-                <run>
-                  <wait>
-                    <log>database system is ready to accept connections</log>
-                    <time>20000</time>
-                  </wait>
-                  <log>
-                    <prefix>DB</prefix>
-                    <color>green</color>
-                  </log>
-                </run>
-              </image>
-              
-              <image>
-                <alias>service</alias>
-                <name>dublinpubs/ranking-service:${project.version}</name>
+        <configuration>
+          <logDate>default</logDate>
+          <autoPull>true</autoPull>
+          <images>
+            <image>
+              <alias>db</alias>
+              <name>postgres:8</name>
+              <run>
+                <wait>
+                  <log>database system is ready to accept connections</log>
+                  <time>20000</time>
+                </wait>
+                <log>
+                  <prefix>DB</prefix>
+                  <color>green</color>
+                </log>
+              </run>
+            </image>
 
-                <build>
-                  <from>java:8u40</from>
-                  <assembly>
-                    <descriptor>${project.basedir}/../docker/assembly.xml</descriptor>
-                  </assembly>
-                  <ports>
-                    <port>8080</port>
-                  </ports>
-                  <cmd>java -jar /maven/ranking-svc.jar</cmd>
-                </build>
-                <run>
-                  <ports>
-                    <port>wildfly.port:8080</port>
-                  </ports>
-                  <wait>
-                    <log>.*Deployed.*</log>
-                    <time>30000</time>
-                  </wait>
-                  <links>
-                     <link>db:db</link>
-                  </links>
-                  <log>
-                    <prefix>SVC</prefix>
-                    <color>white</color>
-                  </log>
-                </run>
-              </image>
-            </images>
-          </configuration>
+            <image>
+              <alias>service</alias>
+              <name>dublinpubs/ranking-service:${project.version}</name>
 
-          <executions>
-            <execution>
-              <id>start</id>
-              <phase>pre-integration-test</phase>
-              <goals>
-                <goal>build</goal>
-                <goal>start</goal>
-              </goals>
-            </execution>
-            <execution>
-              <id>stop</id>
-              <phase>post-integration-test</phase>
-              <goals>
-                <goal>stop</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
+              <build>
+                <from>java:8u40</from>
+                <assembly>
+                  <descriptor>${project.basedir}/../docker/assembly.xml</descriptor>
+                </assembly>
+                <ports>
+                  <port>8080</port>
+                </ports>
+                <cmd>java -jar /maven/ranking-svc.jar</cmd>
+              </build>
+              <run>
+                <ports>
+                  <port>wildfly.port:8080</port>
+                </ports>
+                <wait>
+                  <log>.*Deployed.*pub-ranker.*</log>
+                  <time>60000</time>
+                </wait>
+                <links>
+                   <link>db:db</link>
+                </links>
+                <log>
+                  <prefix>SVC</prefix>
+                  <color>white</color>
+                </log>
+              </run>
+            </image>
+          </images>
+        </configuration>
+
+        <executions>
+          <execution>
+            <id>create-acceptance-test-environment</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>build</goal>
+              <goal>start</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>teardown-acceptance-test-environment</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>stop</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.scala-tools</groupId>
+        <artifactId>maven-scala-plugin</artifactId>
+        <version>2.15.2</version>
+        <executions>
+          <execution>
+            <id>scala-test-compile</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.scalatest</groupId>
+        <artifactId>scalatest-maven-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+          <junitxml>.</junitxml>
+          <filereports>WDF TestSuite.txt</filereports>
+        </configuration>
+        <executions>
+          <execution>
+            <id>acceptance-tests</id>
+            <phase>integration-test</phase>
+            <goals>
+              <goal>test</goal>
+            </goals>
+            <configuration>
+              <systemProperties>
+                <ranking.svc.host>${docker.host.address}</ranking.svc.host>
+                <ranking.svc.port>${wildfly.port}</ranking.svc.port>
+              </systemProperties>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 </project>

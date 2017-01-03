@@ -7,3 +7,5 @@ Dublin Pubs Ranking Service
 
 
 Sample project showing a full maven build with integrated acceptance tests. This is just to be used as a template for how to use a few different technologies in a semi real world scenario
+
+Also using this project as a test of blue ocean Jenkins plugin

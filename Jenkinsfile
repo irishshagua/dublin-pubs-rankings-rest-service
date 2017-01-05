@@ -18,9 +18,8 @@ node {
    }
    
    stage('Validate') {
-      parallel('Install': {
-         sh "'${mvnHome}/bin/mvn' -o install"
-      }, 'Code Coverage': {
+      sh "'${mvnHome}/bin/mvn' -DskipTests install"
+      parallel('Code Coverage': {
          sh "'${mvnHome}/bin/mvn' jacoco:check"
       }, 'Style Check': {
          sh "'${mvnHome}/bin/mvn' checkstyle:checkstyle"
@@ -30,7 +29,7 @@ node {
    }
 
    stage('Build') {
-      sh "'${mvnHome}/bin/mvn' wildfly-swarm:package"
+      sh "'${mvnHome}/bin/mvn' -DskipTests package"
    }
 
    stage('Deploy') {

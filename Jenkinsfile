@@ -1,19 +1,41 @@
 node {
    def mvnHome
-   stage('Preparation') { // for display purposes
-      // Get some code from a GitHub repository
-      git 'https://github.com/irishshagua/dublin-pubs-rankings-rest-service.git'
-      // Get the Maven tool.
-      // ** NOTE: This 'M3' Maven tool must be configured
-      // **       in the global configuration.           
+   stage('Preparation') {
+      echo("Check out branch and setup build pipeline environment")
+      checkout scm
       mvnHome = tool 'M3'
    }
-   stage('Build') {
-      // Run the maven build
-      sh "'${mvnHome}/bin/mvn' clean package"
+   
+   stage('Compile') {
+      echo("Check for compilation issues")
+      sh "'${mvnHome}/bin/mvn' clean compile"
    }
-   stage('Results') {
+   
+   stage('Test') {
+      echo("Execute Unit tests")
+      sh "'${mvnHome}/bin/mvn' test"
       junit '**/target/surefire-reports/TEST-*.xml'
-      archive 'target/*.jar'
+   }
+   
+   stage('Validate') {
+      parallel('Code Coverage': {
+         sh "'${mvnHome}/bin/mvn' jacoco:check"
+      }, 'Style Check': {
+         sh "'${mvnHome}/bin/mvn' checkstyle:checkstyle"
+      }, 'Find Bugs': {
+         sh "'${mvnHome}/bin/mvn' findbugs:check"
+      })
+   }
+
+   stage('Build') {
+      sh "'${mvnHome}/bin/mvn' wildfly-swarm:package"
+   }
+
+   stage('Deploy') {
+      input "Happy to deploy or what?"
+      milestone()
+      node {
+         echo "Deploying"
+      }
    }
 }

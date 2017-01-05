@@ -110,13 +110,6 @@
       <plugin>
         <groupId>org.wildfly.swarm</groupId>
         <artifactId>wildfly-swarm-plugin</artifactId>
-        <executions>
-          <execution>
-            <goals>
-              <goal>package</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
 
 
@@ -176,39 +169,12 @@
             </image>
           </images>
         </configuration>
-
-        <executions>
-          <execution>
-            <id>create-acceptance-test-environment</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>build</goal>
-              <goal>start</goal>
-            </goals>
-          </execution>
-          <execution>
-            <id>teardown-acceptance-test-environment</id>
-            <phase>post-integration-test</phase>
-            <goals>
-              <goal>stop</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
 
       <plugin>
         <groupId>org.scala-tools</groupId>
         <artifactId>maven-scala-plugin</artifactId>
         <version>2.15.2</version>
-        <executions>
-          <execution>
-            <id>scala-test-compile</id>
-            <phase>pre-integration-test</phase>
-            <goals>
-              <goal>testCompile</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
 
       <plugin>
@@ -220,21 +186,6 @@
           <junitxml>.</junitxml>
           <filereports>WDF TestSuite.txt</filereports>
         </configuration>
-        <executions>
-          <execution>
-            <id>acceptance-tests</id>
-            <phase>integration-test</phase>
-            <goals>
-              <goal>test</goal>
-            </goals>
-            <configuration>
-              <systemProperties>
-                <ranking.svc.host>${docker.host.address}</ranking.svc.host>
-                <ranking.svc.port>${wildfly.port}</ranking.svc.port>
-              </systemProperties>
-            </configuration>
-          </execution>
-        </executions>
       </plugin>
     </plugins>
   </build>

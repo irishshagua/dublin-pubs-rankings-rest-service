@@ -18,7 +18,9 @@ node {
    }
    
    stage('Validate') {
-      parallel('Code Coverage': {
+      parallel('Install': {
+         sh "'${mvnHome}/bin/mvn' -o install"
+      }, 'Code Coverage': {
          sh "'${mvnHome}/bin/mvn' jacoco:check"
       }, 'Style Check': {
          sh "'${mvnHome}/bin/mvn' checkstyle:checkstyle"
